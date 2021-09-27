@@ -100,30 +100,21 @@ if(!$IsAjax){
 	<title><?php echo $LayoutPageTitle; ?></title>
 	<!--link rel="dns-prefetch" href="//<?php echo $Config['MainDomainName']; ?>" />
 	<link rel="prefetch" href="//<?php echo $Config['MainDomainName']; ?>" /-->
-	<link rel="apple-touch-icon-precomposed"
-		  href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-57x57-precomposed.png"/>
-	<link rel="apple-touch-icon-precomposed" sizes="72x72"
-		  href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-72x72-precomposed.png"/>
-	<link rel="apple-touch-icon-precomposed" sizes="114x114"
-		  href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-114x114-precomposed.png"/>
-	<link rel="apple-touch-icon-precomposed" sizes="144x144"
-		  href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-144x144-precomposed.png"/>
-	<link rel="apple-touch-icon-precomposed" sizes="180x180"
-		  href="<?php echo $Config['WebsitePath']; ?>/static/img/retinahd_icon.png"/>
+	<link rel="apple-touch-icon-precomposed" href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-57x57-precomposed.png"/>
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-72x72-precomposed.png"/>
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-114x114-precomposed.png"/>
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo $Config['WebsitePath']; ?>/static/img/apple-touch-icon-144x144-precomposed.png"/>
+	<link rel="apple-touch-icon-precomposed" sizes="180x180" href="<?php echo $Config['WebsitePath']; ?>/static/img/retinahd_icon.png"/>
 	<link rel="shortcut icon" type="image/ico" href="<?php echo $Config['WebsitePath']; ?>/favicon.ico"/>
-	<link
-		href="<?php echo $Config['WebsitePath']; ?>/static/css/default/style.css?version=<?php echo CARBON_FORUM_VERSION; ?>"
-		rel="stylesheet" type="text/css"/>
-	<link rel="search" type="application/opensearchdescription+xml"
-		  title="<?php echo mb_substr($Config['SiteName'], 0, 15, 'utf-8'); ?>"
-		  href="<?php echo $Config['WebsitePath']; ?>/search.xml"/>
+	<link href="<?php echo $Config['WebsitePath']; ?>/static/css/default/style.css?version=<?php echo CARBON_FORUM_VERSION; ?>" rel="stylesheet" type="text/css"/>
+	<link rel="search" type="application/opensearchdescription+xml" title="<?php echo mb_substr($Config['SiteName'], 0, 15, 'utf-8'); ?>" href="<?php echo $Config['WebsitePath']; ?>/search.xml"/>
+	<link rel="stylesheet" href="//at.alicdn.com/t/font_2836961_xd536pfhmv.css">
 	<script type="text/javascript">
 		var Prefix = "<?php echo PREFIX; ?>";
 		var WebsitePath = "<?php echo $Config['WebsitePath'];?>";
 	</script>
 	<script type="text/javascript" charset="utf-8" src="<?php echo $Config['LoadJqueryUrl']; ?>"></script>
-	<script type="text/javascript" charset="utf-8"
-			src="<?php echo $Config['WebsitePath']; ?>/static/js/default/global.js?version=<?php echo CARBON_FORUM_VERSION; ?>"></script>
+	<script type="text/javascript" charset="utf-8" src="<?php echo $Config['WebsitePath']; ?>/static/js/default/global.js?version=<?php echo CARBON_FORUM_VERSION; ?>"></script>
 	<script type="text/javascript">
 		<?php if ($CurUserID) {
 			echo 'setTimeout(function() {GetNotification();}, 1);';
@@ -146,58 +137,79 @@ if(!$IsAjax){
 							 alt="<?php echo $Lang['Home']; ?>"/>
 					</a>
 				</div>
-				<div class="buttons">
-					<div class="searchbox">
-						<input type="text" id="SearchInput"
-							   onkeydown="javascript:if((event.keyCode==13)&&(this.value!='')){$('#SearchButton').trigger('click');}"
-							   placeholder="<?php echo $Lang['Search']; ?>"<?php echo $UrlPath == 'search' && !empty($Keyword) ? ' value="' . $Keyword . '"' : ''; ?> />
-						<a href="###" id="SearchButton">
-							<div class="icon icon-search"></div>
-						</a>
-					</div>
+				<div class="nav">
+					<a href="<?php echo $Config['WebsitePath']; ?>/"<?php echo $UrlPath == 'home' ? ' class="buttons-active"' : ''; ?>>
+						<?php echo $Lang['Home']; ?>
+					</a>
+					<a href="<?php echo $Config['WebsitePath']; ?>/explore"<?php echo $UrlPath == 'explore' ? ' class="buttons-active"' : ''; ?>>发现</a>
+				</div>
+				<div class="searchbox">
+					<input type="text" id="SearchInput"
+							onkeydown="javascript:if((event.keyCode==13)&&(this.value!='')){$('#SearchButton').trigger('click');}"
+							placeholder="<?php echo $Lang['Search']; ?>"<?php echo $UrlPath == 'search' && !empty($Keyword) ? ' value="' . $Keyword . '"' : ''; ?> />
+					<a href="###" id="SearchButton">
+						<i class="md md-search"></i>
+					</a>
+				</div>
+				<div class="navuser">
 					<?php
 					if ($CurUserID) {
 						?>
-						<a href="<?php echo $Config['WebsitePath']; ?>/settings"
-						   title="<?php echo $Lang['Settings']; ?>"<?php echo $UrlPath == 'settings' ? ' class="buttons-active"' : ''; ?>>
-							<div class="icon icon-settings"></div>
-						</a>
-						<a href="<?php echo $Config['WebsitePath']; ?>/notifications/list#notifications1"
-						   title="<?php echo $Lang['Notifications']; ?>"<?php echo $UrlPath == 'notifications' ? ' class="buttons-active"' : ''; ?>
-						   onclick="javascript:ShowNotification(0);">
-							<div class="icon icon-notifications"></div>
-							<span class="icon-messages-num" id="MessageNumber">0</span>
-						</a>
-						<?php
-						if ($CurUserRole == 5) {
-							?>
-							<a href="<?php echo $Config['WebsitePath']; ?>/dashboard"
-							   title="<?php echo $Lang['System_Settings']; ?>"<?php echo $UrlPath == 'dashboard' ? ' class="buttons-active"' : ''; ?>>
-								<div class="icon icon-dashboard"></div>
+						<div href="javascript:;" class="info">
+							<a href="<?php echo $Config['WebsitePath']; ?>/u/<?php echo urlencode($CurUserName); ?>">
+								<?php echo GetAvatar($CurUserID, $CurUserName, 'large'); ?>
+								<span><?php echo $CurUserName; ?></span>
 							</a>
-						<?php }
-						?>
-						<!-- <a href="<?php echo $Config['WebsitePath']; ?>/users/following"<?php echo $UrlPath == 'favorite_users' ? ' class="buttons-active"' : ''; ?>><?php echo $Lang['Users_Followed']; ?></a>
-					<a href="<?php echo $Config['WebsitePath']; ?>/tags/following"<?php echo $UrlPath == 'favorite_tags' ? ' class="buttons-active"' : ''; ?>><?php echo $Lang['Tags_Followed']; ?></a> -->
-						<a href="<?php echo $Config['WebsitePath']; ?>/new"<?php echo $UrlPath == 'new' ? ' class="buttons-active"' : ''; ?>><?php echo $Lang['Create_New_Topic']; ?></a>
+							<nav>
+								<a href="<?php echo $Config['WebsitePath']; ?>/new">
+									<i class="md md-add"></i>
+									<?php echo $Lang['Create_New_Topic']; ?>
+								</a>
+								<?php
+								if ($CurUserRole == 5) {
+									?>
+									<a href="<?php echo $Config['WebsitePath']; ?>/dashboard"
+									title="<?php echo $Lang['System_Settings']; ?>"<?php echo $UrlPath == 'dashboard' ? ' class="buttons-active"' : ''; ?>>
+										<i class="md md-setting"></i>
+										<?php echo $Lang['System_Settings']; ?>
+									</a>
+								<?php }
+								?>
+								<!--
+									<a href="<?php echo $Config['WebsitePath']; ?>/users/following"<?php echo $UrlPath == 'favorite_users' ? ' class="buttons-active"' : ''; ?>><?php echo $Lang['Users_Followed']; ?></a>
+									<a href="<?php echo $Config['WebsitePath']; ?>/tags/following"<?php echo $UrlPath == 'favorite_tags' ? ' class="buttons-active"' : ''; ?>><?php echo $Lang['Tags_Followed']; ?></a>
+								-->
+								<a href="<?php echo $Config['WebsitePath']; ?>/notifications/list#notifications1"
+								title="<?php echo $Lang['Notifications']; ?>"<?php echo $UrlPath == 'notifications' ? ' class="buttons-active"' : ''; ?>
+								onclick="javascript:ShowNotification(0);">
+									<i class="md md-notification"></i>
+									<?php echo $Lang['Notifications']; ?>
+									<span class="icon-messages-num" id="MessageNumber">0</span>
+								</a>
+								<a href="<?php echo $Config['WebsitePath']; ?>/settings"
+								title="<?php echo $Lang['Settings']; ?>"<?php echo $UrlPath == 'settings' ? ' class="buttons-active"' : ''; ?>>
+									<i class="md md-user"></i>
+									<?php echo $Lang['Settings']; ?>
+								</a>
+								<a href="<?php echo $Config['WebsitePath']; ?>/login?logout=<?php echo $CurUserCode; ?>">
+									<i class="md md-export"></i>
+									<?php echo $Lang['Log_Out']; ?>
+								</a>
+							</nav>
+						</div>
 						<?php
 					} else {
 						?>
-						<a href="<?php echo $Config['WebsitePath']; ?>/register"<?php echo $UrlPath == 'register' ? ' class="buttons-active"' : ''; ?>>
-							<?php echo $Lang['Sign_Up']; ?>
-						</a>
 						<a href="<?php echo $Config['WebsitePath']; ?>/login"<?php echo $UrlPath == 'login' ? ' class="buttons-active"' : ''; ?>>
 							<?php echo $Lang['Log_In']; ?>
+						</a>
+						<a href="<?php echo $Config['WebsitePath']; ?>/register"<?php echo $UrlPath == 'register' ? ' class="buttons-active"' : ''; ?>>
+							<?php echo $Lang['Sign_Up']; ?>
 						</a>
 						<?php
 					}
 					?>
-					<!--a href="<?php echo $Config['WebsitePath']; ?>/explore"<?php echo $UrlPath == 'explore' ? ' class="buttons-active"' : ''; ?>>发现</a-->
-					<a href="<?php echo $Config['WebsitePath']; ?>/"<?php echo $UrlPath == 'home' ? ' class="buttons-active"' : ''; ?>>
-						<?php echo $Lang['Home']; ?>
-					</a>
 				</div>
-				<div class="c"></div>
 			</div>
 		</div>
 		<div class="emptyProgressBar">

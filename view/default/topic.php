@@ -31,7 +31,7 @@ if (!defined('InternalAccess')) exit('error: 403 Access Denied');
 				<div class="c"></div>
 			</div>
 			<div class="topic-content">
-				<div id="p<?php echo $PostsArray[0]['ID']; ?>">
+				<div id="p<?php echo $PostsArray[0]['ID']; ?>" class="threadbody" style="white-space:pre-line;line-height: 2;">
 					<?php echo $PostsArray[0]['Content']; ?>
 				</div>
 				<div id="edit<?php echo $PostsArray[0]['ID']; ?>" style="width:648px;height:auto;" class="hide"></div>
@@ -199,28 +199,27 @@ if (!defined('InternalAccess')) exit('error: 403 Access Denied');
 									if ($CurUserRole >= 4 || ($Config['AllowEditing'] === 'true' && $Post['UserID'] == $CurUserID)) {
 										?><a href="###" onclick="javascript:EditPost(<?php echo $Post['ID']; ?>);"
 											 title="<?php echo $Lang['Edit']; ?>">
-											<div class="icon icon-edit"></div>
-										</a>&nbsp;&nbsp;&nbsp;&nbsp;<?php } ?>
+											<i class="md md-edit"></i>
+										</a><?php } ?>
 									<?php if ($CurUserRole >= 4) { ?>
 										<a href="###"
 										   onclick="javascript:Manage(<?php echo $Post['ID']; ?>, 2, 'Delete', true, this);"
 										   title="<?php echo $Lang['Delete']; ?>">
-											<div class="icon icon-delete"></div>
+											<i class="md md-trash"></i>
 										</a>
 									<?php } ?>
 								</div>
 								<div class="float-right">
 									<a href="#reply" title="<?php echo $Lang['Reply']; ?>"
 									   onclick="JavaScript:Reply('<?php echo $Post['UserName']; ?>', <?php echo $PostFloor; ?>, <?php echo $Post['ID']; ?>);">
-										<div class="icon icon-reply"></div>
+										<div class="md md-reply"></div>
 									</a>
 									<?php
 									if ($EnableQuote) {
 										?>
-										&nbsp;&nbsp;&nbsp;&nbsp;
 										<a href="#reply" title="<?php echo $Lang['Quote']; ?>"
 										   onclick="JavaScript:Quote('<?php echo $Post['UserName']; ?>', <?php echo $PostFloor; ?>, <?php echo $Post['ID']; ?>);">
-											<div class="icon icon-quote"></div>
+											<div class="md md-quote"></div>
 										</a>
 										<?php
 									}
@@ -271,7 +270,7 @@ if (!defined('InternalAccess')) exit('error: 403 Access Denied');
 
 		<a name="reply"></a>
 		<script type="text/javascript">
-			var MaxPostChars = <?php echo $Config['MaxPostChars']; ?>;//主题内容最多字节数
+			/*var MaxPostChars = <?php echo $Config['MaxPostChars']; ?>;//主题内容最多字节数
 			loadScript("<?php echo $Config['WebsitePath']; ?>/static/js/default/topic.function.js?version=<?php echo CARBON_FORUM_VERSION; ?>", function () {
 				InitNewTagsEditor();
 				loadScript("<?php echo $Config['WebsitePath']; ?>/static/editor/ueditor.config.js?version=<?php echo CARBON_FORUM_VERSION; ?>", function () {
@@ -285,13 +284,96 @@ if (!defined('InternalAccess')) exit('error: 403 Access Denied');
 						});
 					})
 				});
+			});*/
+			loadScript('https://cdn.jsdelivr.net/gh/cansnow/NKeditor@master/NKeditor-all-min.js',function(){
+				
+				KindEditor.ready(function(K) {
+					window.editor = K.create('#editor', {
+						dialogOffset : 0, //对话框距离页面顶部的位置，默认为0居中，
+						allowFileManager : false,
+						allowImageUpload:false,
+						allowFlashUpload:false,
+						allowMediaUpload:false,
+						allowFileUpload:false,
+						items : [ 'fontname', 'fontsize','forecolor', 'hilitecolor','bold',
+							'italic', 'underline', 'strikethrough', 
+							'justifyleft', 'justifycenter', 'justifyright',
+							'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent','image',
+							'flash', 'media','emoticons','link','fullscreen'
+						],
+						pasteType:1,
+						afterChange : function() {
+							this.sync();
+						},
+						afterCreate:function(){
+							K('#editor').html("");
+						},
+						themeType : "black", //主题
+					});
+				});
+			});
+			loadScript("<?php echo $Config['WebsitePath']; ?>/static/js/default/topic.function.js?version=<?php echo CARBON_FORUM_VERSION; ?>",function(){
+				//RenderTopic();
+				
+				//回复帖子
+				ReplyToTopic = function () {
+					html = editor.html();
+					if (editor.count('text')<5) {
+						alert(Lang['Content_Empty']);
+						editor.focus();
+					} else {
+						$("#ReplyButton").val(Lang['Replying']);
+						editor.readonly(true);
+						//UE.getEditor('editor').setDisabled('fullscreen');
+						$.ajax({
+							url: WebsitePath + '/reply',
+							data: {
+								FormHash: document.reply.FormHash.value,
+								TopicID: document.reply.TopicID.value,
+								Content: html
+							},
+							type: 'post',
+							cache: false,
+							dataType: 'json',
+							async: true,
+							success: function (data) {
+								if (data.Status === 1) {
+									$("#ReplyButton").val(Lang['Reply_Success']);
+									if (window.localStorage) {
+										//清空草稿箱
+										StopAutoSave();
+									}
+									//清空编辑器
+									editor.html("");
+									$.pjax({
+										url: WebsitePath + "/t/" + data.TopicID + (data.Page > 1 ? "-" + data.Page : "") + "?cache=" + Math.round(new Date().getTime() / 1000) + "#Post" + data.PostID,
+										container: '#main',
+										scrollTo: false
+									});
+									//location.href = WebsitePath + "/t/" + data.TopicID + (data.Page > 1 ? "-" + data.Page: "") + "?cache=" + Math.round(new Date().getTime() / 1000) + "#Post" + data.PostID;
+								} else {
+									alert(data.ErrorMessage);
+									editor.readonly(false);
+									$("#ReplyButton").val(Lang['Submit_Again']);
+								}
+							},
+							error: function () {
+								alert(Lang['Submit_Failure']);
+								editor.readonly(false);
+								$("#ReplyButton").val(Lang['Submit_Again']);
+							}
+						});
+					}
+					return true;
+				}
+
 			});
 		</script>
 		<form name="reply">
 			<input type="hidden" name="FormHash" value="<?php echo $FormHash; ?>">
 			<input type="hidden" name="TopicID" value="<?php echo $ID; ?>">
 			<p>
-			<div id="editor" style="width:100%;height:180px;">Loading……</div>
+			<div id="editor" style="width:100%;height:180px;"></div>
 			</p>
 			<div class="float-right"><input type="button" value="<?php echo $Lang['Reply']; ?>(Ctrl+Enter)"
 											class="textbtn" id="ReplyButton" onclick="JavaScript:ReplyToTopic();"/>

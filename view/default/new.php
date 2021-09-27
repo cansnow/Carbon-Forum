@@ -7,6 +7,7 @@ var AllowEmptyTags = <?php echo $Config["AllowEmptyTags"]; ?>;//允许空话题
 var MaxTagNum = <?php echo $Config["MaxTagsNum"]; ?>;//最多的话题数量
 var MaxTitleChars = <?php echo $Config['MaxTitleChars']; ?>;//主题标题最多字节数
 var MaxPostChars = <?php echo $Config['MaxPostChars']; ?>;//主题内容最多字节数
+/*
 loadScript("<?php echo $Config['WebsitePath']; ?>/static/editor/ueditor.config.js?version=<?php echo CARBON_FORUM_VERSION; ?>",function() {
 	loadScript("<?php echo $Config['WebsitePath']; ?>/static/editor/ueditor.all.min.js?version=<?php echo CARBON_FORUM_VERSION; ?>",function(){
 		loadScript("<?php echo $Config['WebsitePath']; ?>/language/<?php echo ForumLanguage; ?>/<?php echo ForumLanguage; ?>.js?version=<?php echo CARBON_FORUM_VERSION; ?>",function(){
@@ -20,6 +21,38 @@ loadScript("<?php echo $Config['WebsitePath']; ?>/static/editor/ueditor.config.j
 			});
 		});
 	});
+});
+*/
+loadScript('https://cdn.jsdelivr.net/gh/cansnow/NKeditor@master/NKeditor-all-min.js',function(){
+	
+	KindEditor.ready(function(K) {
+		K.create('#editor', {
+			dialogOffset : 0, //对话框距离页面顶部的位置，默认为0居中，
+			allowFileManager : false,
+			allowImageUpload:false,
+			allowFlashUpload:false,
+			allowMediaUpload:false,
+			allowFileUpload:false,
+			items : [ 'fontname', 'fontsize','forecolor', 'hilitecolor','bold',
+				'italic', 'underline', 'strikethrough', 
+				'justifyleft', 'justifycenter', 'justifyright',
+				'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent','image',
+				'flash', 'media','emoticons','link','fullscreen'
+			],
+			pasteType:1,
+			afterChange : function() {
+				this.sync();
+			},
+			themeType : "black", //主题
+		});
+	});
+});
+loadScript("<?php echo $Config['WebsitePath']; ?>/static/js/default/new.function.js?version=<?php echo CARBON_FORUM_VERSION; ?>",function(){
+	//InitNewTopicEditor();
+	$.each(<?php echo json_encode(ArrayColumn($HotTagsArray, 'Name')); ?>,function(Offset,TagName) {
+		TagsListAppend(TagName, Offset);
+	});
+	console.log('editor loaded.');
 });
 </script>
 <div class="main-content">

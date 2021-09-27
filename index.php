@@ -82,6 +82,7 @@ $Routes['GET']['/users/following(/page/(?<page>[0-9]*))?']                      
 $Routes['GET']['/upload_controller']                                                       = 'upload';
 $Routes['POST']['/upload_controller']                                                      = 'upload';
 $Routes['GET']['/redirect-(?<view>desktop|mobile)']                                        = 'redirect';
+$Routes['POST']['/addthread']                                                                    = 'addthread';
 
 //这里是Routes End
 $UrlPath = 'home';
